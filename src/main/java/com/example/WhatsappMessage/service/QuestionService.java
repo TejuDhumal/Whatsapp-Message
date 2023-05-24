@@ -1,6 +1,9 @@
 package com.example.WhatsappMessage.service;
 
 import com.example.WhatsappMessage.model.*;
+import com.example.WhatsappMessage.model.message.EventMessage;
+import com.example.WhatsappMessage.model.message.Row;
+import com.sun.net.httpserver.Headers;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -61,11 +64,11 @@ public class QuestionService {
 
     //
     public HttpHeaders getHeaders() {
-        String authHeader = "Bearer " + "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJ3elRvX1hzYXQycW9vMFBxbUxVRkZnR2VsRjcwY251bVkzT0ltU2daTWhZIn0.eyJleHAiOjE2ODQ5MjAyNDUsImlhdCI6MTY4NDkxMzA0OSwiYXV0aF90aW1lIjoxNjg0OTA1NjI3LCJqdGkiOiIxOGQ0MjRmYy1hZGUyLTQ2YWMtYTQ2Zi1jNTVjYTc3NWE3OTEiLCJpc3MiOiJodHRwczovL2F1dGgtZGV2Lmdlc3NhLmlvL3JlYWxtcy9nZXNzYS1zdHVkaW8iLCJhdWQiOlsiYXV0aG9yaXphdGlvbiIsImFjY291bnQiXSwic3ViIjoiZGI4ZTUwNGYtZjkxYy00ZDI3LThiOTUtZWEwMGY2NTUxMGNmIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoibWFzdGVyQ2xpZW50Iiwibm9uY2UiOiI1YTc0MWY4Yy05ZTE0LTRjZmEtOGUyYS01Y2Q5MzVhNTY3YTgiLCJzZXNzaW9uX3N0YXRlIjoiZDNlNDBiZWMtYjdmNy00MmQ5LWI0ZGQtODU0MTRmZTgyNjUxIiwiYWNyIjoiMCIsImFsbG93ZWQtb3JpZ2lucyI6WyIqIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJkZWZhdWx0LXJvbGVzLWdlc3NhLXN0dWRpbyIsIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJhdXRob3JpemF0aW9uIjp7InJvbGVzIjpbImFkbWluIl19LCJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6Im9wZW5pZCBlbWFpbCBwcm9maWxlIiwic2lkIjoiZDNlNDBiZWMtYjdmNy00MmQ5LWI0ZGQtODU0MTRmZTgyNjUxIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJuYW1lIjoidGVqYXN3aW5pIGRodW1hbCIsInRlbmFudElkIjoiZ2Vzc2Etc3R1ZGlvIiwibW9iaWxlIjoiOTg3NjU0MzIxMCIsInByZWZlcnJlZF91c2VybmFtZSI6InRlamFzdmluaWRodW1hbDQ5QGdtYWlsLmNvbSIsImdpdmVuX25hbWUiOiJ0ZWphc3dpbmkiLCJ1c2VySWQiOiI2NDY1Y2VmZjBmYmVlMmJiZmQ0NmZlMjAiLCJmYW1pbHlfbmFtZSI6ImRodW1hbCIsImVtYWlsIjoidGVqYXN2aW5pZGh1bWFsNDlAZ21haWwuY29tIn0.FU_dLzm0rq5PkMfgGziCKhODSfOd6rebctMnhaBHSd5jDt9AXMbvpHNhvl8dDjpuEHvHzOGt65Jql5X71j7oDeoCFONKDoy2d3xdfHVC86szHOeFTxGfXXQu-CL3ToeWo_xVdwKkEX0hGVelnIfPJjKcwk5ZzvSWwAk9E-J0LVr9m770JWascGyyfXYNhyZK9vpqkmEDinrQYARHWyWAnzPHcMNh-U6NZZlJyqvof6oWUs20tRaQ9l-3eveDIOkVFGRUi-5O_iMBJC7u7L__hsoqzh77I14-5mFcei2ZUylTOJKQDyW_jEuZX-izbVTz4Yqg3iaHqb8EI95INTVJrg";
+        String authHeader = "Bearer " + "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJ3elRvX1hzYXQycW9vMFBxbUxVRkZnR2VsRjcwY251bVkzT0ltU2daTWhZIn0.eyJleHAiOjE2ODQ5MzkzNjUsImlhdCI6MTY4NDkzMjE2OCwiYXV0aF90aW1lIjoxNjg0OTI5NDIxLCJqdGkiOiI3NDNlMzIyOS1hMjY0LTQwNjAtYTc1NC02YWJkYzE1Y2NhYWIiLCJpc3MiOiJodHRwczovL2F1dGgtZGV2Lmdlc3NhLmlvL3JlYWxtcy9nZXNzYS1zdHVkaW8iLCJhdWQiOlsiYXV0aG9yaXphdGlvbiIsImFjY291bnQiXSwic3ViIjoiZGI4ZTUwNGYtZjkxYy00ZDI3LThiOTUtZWEwMGY2NTUxMGNmIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoibWFzdGVyQ2xpZW50Iiwibm9uY2UiOiI2NmJiODkyNy1mMzdhLTRkYWMtOTAwYi1iZDNkYTY0Njc4NjEiLCJzZXNzaW9uX3N0YXRlIjoiNGY4ZDA4OTItNzBiZS00NDRmLWJkYmItMTAwZDZhYzA1ODhkIiwiYWNyIjoiMCIsImFsbG93ZWQtb3JpZ2lucyI6WyIqIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJkZWZhdWx0LXJvbGVzLWdlc3NhLXN0dWRpbyIsIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJhdXRob3JpemF0aW9uIjp7InJvbGVzIjpbImFkbWluIl19LCJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6Im9wZW5pZCBlbWFpbCBwcm9maWxlIiwic2lkIjoiNGY4ZDA4OTItNzBiZS00NDRmLWJkYmItMTAwZDZhYzA1ODhkIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJuYW1lIjoidGVqYXN3aW5pIGRodW1hbCIsInRlbmFudElkIjoiZ2Vzc2Etc3R1ZGlvIiwibW9iaWxlIjoiOTg3NjU0MzIxMCIsInByZWZlcnJlZF91c2VybmFtZSI6InRlamFzdmluaWRodW1hbDQ5QGdtYWlsLmNvbSIsImdpdmVuX25hbWUiOiJ0ZWphc3dpbmkiLCJ1c2VySWQiOiI2NDY1Y2VmZjBmYmVlMmJiZmQ0NmZlMjAiLCJmYW1pbHlfbmFtZSI6ImRodW1hbCIsImVtYWlsIjoidGVqYXN2aW5pZGh1bWFsNDlAZ21haWwuY29tIn0.h22hTlOQOXe3aA14TEN8d8aPM0inwc75eZoHqQNZIjk-1GnEh00WjUOe9ODdCXrezFnu_qcEdqLPWD-llJtlfSIPp0pIzFVlE-f8Cq1mAJErARH-IzlT5D-z20nsvzcz0ANpSmuqkPBZOSCD_iMvqshWSDv29fbogP64NKLezD4g334x1K13uKXpXu1QBd_wYa35SrzfTYRALwBVWGId6IpCfredss3NXiDT4IJreMIZ3se5YPyGxcPGMHT_U6I96x_DmlGUs2WgknPiB9oM1igNE-YpUUJSjDIIUrla_EbzefjV1D58MzE4jZ4A9DVU0SU5xAJ3iq6KaD8e-BbwQA";
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", authHeader);
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("x-tenant-id", "6465db624ccc68b829974544");
+        headers.set("x-tenant-id", "646e0759c4d077fad4e24592");
         System.out.println(headers);
         return headers;
     }
@@ -80,7 +83,7 @@ public class QuestionService {
 //        get all employees by gessa get all employee api
         HttpEntity<EventEmployee> entity = new HttpEntity<>(getHeaders());
         ResponseEntity<EventEmployee> response = restTemplate.exchange(
-                "https://gessa.io/cms/employee/?page=0&size=2",
+                "https://gessa.io/cms/employees/?page=0&size=2",
                 HttpMethod.GET,
                 entity,
                 new ParameterizedTypeReference<EventEmployee>() {},
@@ -94,26 +97,16 @@ public class QuestionService {
 
     // Method to send questions to employees
 
-    public void sendQuestionsToEmployees()  {
+    public void sendQuestionsToEmployees(EventMessage eventMessage)  {
 //        for (int day = 0; day < totalDays; day++) {
 //        while (true) {
-
-
-            for (DataEmployee employee : employees) {
-                List<Data> selectedQuestions = selectQuestionsForDay();
+        for (DataEmployee employee : employees) {
+                List<Data> selectedQuestions = selectQuestionsForOneDay();
 
                 // Send the questions to the employee
-                sendQuestionsToEmployee(employee, selectedQuestions);
-
-
+                sendQuestionsToEmployee(employee, selectedQuestions, eventMessage);
             }
-
-            // Check if all questions have been used
-//            if (useIds.size() == questionPool.size()) {
-//                break; // Exit the loop if all questions have been used
-//            }
-
-        }
+    }
 
 
 
@@ -121,6 +114,7 @@ public class QuestionService {
 
     private List<Data> selectQuestionsForDay() {
         List<String> questionIds = new ArrayList<>();
+        System.out.println(questionIds);
         for (int i = 0; i < questionPool.size(); i++) {
             questionIds.add(questionPool.get(i).getQuestion_id());
         }
@@ -142,7 +136,6 @@ public class QuestionService {
             // Add the question to the selectedQuestions list
 
             String finalId = id;
-
             selectedQuestions.add(questionPool.stream()
                     .filter(question -> question.getQuestion_id().equals(finalId))
                     .findFirst()
@@ -157,8 +150,32 @@ public class QuestionService {
     }
 
     // Method to send questions to an employee
-    private void sendQuestionsToEmployee(DataEmployee employee, List<Data> questions) {
-        System.out.println("send");
+    private void sendQuestionsToEmployee(DataEmployee employee, List<Data> questions, EventMessage eventMessage) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth("EAANFSPQeQyQBABzWE6CQZBVTJ8OoEYzzoJfNCsoJwLXcTzxxcqXYYUxjQlHPxuhobR14Swa4Lz2XPPxnXz0fcGphrZBPnaRLL76LiSthNeSnBwQCJCIFcBgq4zB13HYTTlu2OlgZAV6M5qYNgjapbEoWjHZA4kzlYDfSw5ZBj3Q5JIDCr054owVib2GPEGPtxI1KITZBQPgKOZCEpnPd1YU");
+        eventMessage.getInteractive().getAction().getSections().get(0).setTitle("question");
+        String no = employee.getMobile_no();
+        eventMessage.setTo(employee.getMobile_no());
+        List<Row> rows = new ArrayList<>();
+        System.out.println(eventMessage.getTo());
+        for (int i = 0; i < questions.size(); i++) {
+            Data question = questions.get(i);
+            Row row = new Row();
+            row.setId(question.getQuestion_id());
+            row.setTitle(question.getQuestion());
+            rows.add(row);
+        }
+        eventMessage.getInteractive().getAction().getSections().get(0).setRows(rows);
+       HttpEntity<EventMessage> entity = new HttpEntity<>(eventMessage,headers);
+        ResponseEntity<EventMessage> response = restTemplate.exchange(
+                "https://graph.facebook.com/v16.0/123419960748882/messages",
+                HttpMethod.POST,
+                entity,
+                new ParameterizedTypeReference<EventMessage>() {},
+                EventEmployee.class);
+        System.out.println(response.getBody());
 
     }
 
@@ -173,7 +190,7 @@ Set<String> usedQuestions = new HashSet<>(); // Track used question names
             List<Data> selectedQuestions = selectQuestionsForOneDay();
 
             for (DataEmployee employee : employees) {
-                sendQuestionsToEmployee(employee, selectedQuestions);
+//                sendQuestionsToEmployee(employee, selectedQuestions);
             }
 
             // Check if all questions have been used
@@ -189,6 +206,7 @@ Set<String> usedQuestions = new HashSet<>(); // Track used question names
         for (int i = 0; i < questionPool.size(); i++) {
             questionnames.add(questionPool.get(i).getQuestion());
         }
+
 
         // Shuffle the questionnames list
         Collections.shuffle(questionnames);

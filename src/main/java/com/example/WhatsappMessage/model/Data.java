@@ -5,7 +5,7 @@ import java.util.Date;
 public class Data {
     public String _id;
     public String question_id;
-    public String question;
+    public String questionName;
     public int isDelete;
     public String type;
     public String createdBy;
@@ -13,10 +13,10 @@ public class Data {
     public String updatedBy;
     public String updatedAt;
 
-    public Data(String _id, String question_id, String question, int isDelete, String type, String createdBy, String createdAt, String updatedBy, String updatedAt) {
+    public Data(String _id, String question_id, String questionName, int isDelete, String type, String createdBy, String createdAt, String updatedBy, String updatedAt) {
         this._id = _id;
         this.question_id = question_id;
-        this.question = question;
+        this.questionName = questionName;
         this.isDelete = isDelete;
         this.type = type;
         this.createdBy = createdBy;
@@ -45,11 +45,11 @@ public class Data {
     }
 
     public String getQuestion() {
-        return question;
+        return questionName;
     }
 
     public void setQuestion(String question) {
-        this.question = question;
+        this.questionName = questionName;
     }
 
     public int getIsDelete() {
